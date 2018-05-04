@@ -1,7 +1,7 @@
 #include "arduinoFFT.h"
  
 #define SAMPLES 128             //Must be a power of 2
-#define SAMPLING_FREQUENCY 10000 //Hz, must be less than 10000 due to ADC
+#define SAMPLING_FREQUENCY 25600 //Hz, must be less than 10000 due to ADC
  
 arduinoFFT FFT = arduinoFFT();
  
@@ -18,6 +18,8 @@ void setup() {
 }
  
 void loop() {
+
+    static double freqReadings[10];
    
     /*SAMPLING*/
     for(int i=0; i<SAMPLES; i++)
@@ -35,20 +37,26 @@ void loop() {
     FFT.Windowing(vReal, SAMPLES, FFT_WIN_TYP_HAMMING, FFT_FORWARD);
     FFT.Compute(vReal, vImag, SAMPLES, FFT_FORWARD);
     FFT.ComplexToMagnitude(vReal, vImag, SAMPLES);
-    double peak = FFT.MajorPeak(vReal, SAMPLES, SAMPLING_FREQUENCY);
  
     /*PRINT RESULTS*/
-    Serial.println(peak);     //Print out what frequency is the most dominant.
- 
-    for(int i=0; i<(SAMPLES/2); i++)
+    freqReadings[0] = vReal[25]; //5000 Hz
+    freqReadings[1] = ((vReal[27] + vReal[28]))/2; //5500Hz
+    freqReadings[2] = vReal[30]; //6000 Hz
+    freqReadings[3] = ((vReal[32] + vReal[33]))/2; //6500Hz
+    freqReadings[4] = vReal[35]; //7000 
+    freqReadings[5] = ((vReal[37] + vReal[38]))/2; //7500Hz
+    freqReadings[6] = vReal[40]; //8000 
+    freqReadings[7] = ((vReal[42] + vReal[43]))/2; //8500Hz
+    freqReadings[8] = vReal[45]; //9000 
+    freqReadings[9] = ((vReal[47] + vReal[48]))/2; //9500Hz
+
+
+    for(size_t i = 0; i < 10; i++)
     {
-        /*View all these three lines in serial terminal to see which frequencies has which amplitudes*/
-         
-        //Serial.print((i * 1.0 * SAMPLING_FREQUENCY) / SAMPLES, 1);
-        //Serial.print(" ");
-       // Serial.println(vReal[i], 1);    //View only this line in serial plotter to visualize the bins
+      Serial.print(5000 + (500 * i)); Serial.print(" Amplitude: "); 
+      Serial.println(freqReadings[i]);
     }
- 
-    //delay(1000);  //Repeat the process every second OR:
+    Serial.print("\n\n");
+    delay(1000);
    
 }
