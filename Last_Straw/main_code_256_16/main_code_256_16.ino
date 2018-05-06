@@ -3,8 +3,8 @@
 #include <Servo.h>
 #include <Ping.h>
 
-#define trigPin 21 //A9
-#define echoPin 20 //A8
+#define trigPin 21 
+#define echoPin 20
 
 
 
@@ -15,7 +15,6 @@ extern double get_distance()  // returns distance in Centimeters but i havent te
       digitalWrite(trigPin, LOW); 
       delayMicroseconds(2);
       digitalWrite(trigPin, HIGH);
-    
       delayMicroseconds(10); 
       digitalWrite(trigPin, LOW);
       duration = pulseIn(echoPin, HIGH);
@@ -84,6 +83,7 @@ void drive_verichel (char direct, char angle_rad , char distance_cm )
   {
     case front : 
         
+<<<<<<< HEAD
         motore1.writeMicroseconds(1300); //left forward
         motore2.writeMicroseconds(1283);  //right backward 
 
@@ -93,10 +93,16 @@ void drive_verichel (char direct, char angle_rad , char distance_cm )
           
         }
             //delay(1000*distance_cm); // distance
+=======
+        motore1.writeMicroseconds(1000); //left forward
+        motore2.writeMicroseconds(1000);  //right backward 
+        delay(1800*distance_cm); // distance
+>>>>>>> 1818f84d900eead4e681cc45ef05cb31365b72aa
         
         stop_function();
         break ;
     case back : 
+<<<<<<< HEAD
         motore1.writeMicroseconds(1300); //left turn around 
         motore2.writeMicroseconds(1800);  //right backward 
         
@@ -118,11 +124,25 @@ void drive_verichel (char direct, char angle_rad , char distance_cm )
         
           delay(1800*angle_rad); // angle
         
+=======
+        motore1.writeMicroseconds(1000); //left turn around 
+        motore2.writeMicroseconds(2000);  //right backward 
+        delay(1800*angle_rad); // distance
+        motore1.writeMicroseconds(1000); // left forward
+        motore2.writeMicroseconds(1000);  //right backward 
+        delay(1800*distance_cm); // distance
+        stop_function();
+        break ;
+    case left : 
+        motore1.writeMicroseconds(1000); //left forward
+        motore2.writeMicroseconds(2000);  //right backward 
+        delay(1800*angle_rad); // angle
+>>>>>>> 1818f84d900eead4e681cc45ef05cb31365b72aa
         stop_function();
         break ;
     case right : 
-        motore1.writeMicroseconds(1800); //left forward
-        motore2.writeMicroseconds(1300); //right backward 
+        motore1.writeMicroseconds(2000); //left forward
+        motore2.writeMicroseconds(1000); //right backward 
         delay(1800*angle_rad); // angle
         stop_function();
         break ;
