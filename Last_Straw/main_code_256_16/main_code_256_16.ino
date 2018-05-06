@@ -86,23 +86,38 @@ void drive_verichel (char direct, char angle_rad , char distance_cm )
         
         motore1.writeMicroseconds(1300); //left forward
         motore2.writeMicroseconds(1283);  //right backward 
-        delay(1800*distance_cm); // distance
+
+        for(int i=0;i<distance_cm && (get_distance() > distance_threshold);i++)
+        {
+          delay(1800); // distance
+          
+        }
+            //delay(1000*distance_cm); // distance
         
         stop_function();
         break ;
     case back : 
         motore1.writeMicroseconds(1300); //left turn around 
         motore2.writeMicroseconds(1800);  //right backward 
-        delay(1800*angle_rad); // distance
+        
+        for(int i=0;i<angle_rad && (get_distance() > distance_threshold);i++)
+        {
+          delay(1800); // angle
+          
+        }
         motore1.writeMicroseconds(1300); // left forward
         motore2.writeMicroseconds(1283);  //right backward 
-        delay(1800*distance_cm); // distance
+        
+          delay(1800*distance_cm); // distance
+        
         stop_function();
         break ;
     case left : 
         motore1.writeMicroseconds(1300); //left forward
         motore2.writeMicroseconds(1800);  //right backward 
-        delay(1800*angle_rad); // angle
+        
+          delay(1800*angle_rad); // angle
+        
         stop_function();
         break ;
     case right : 
