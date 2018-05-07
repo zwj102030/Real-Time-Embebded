@@ -25,42 +25,48 @@ void setup()
 }
 
 void loop()
-{    char index;
+{   char index_current;
+    char index_last;
     int current_Freq;
     int target_Freq; 
     //distance =get_distance();
-    Sampling();
-    
-    
+   index_current =  Sampling();
+   char rotate_check_flag =1 ;
    while ( rotate_check_flag )
    {
-    drive_verichel(left,1);
-   index = Sampling();
-    if (  totReadings[index] >Freq_Value_Last) 
+    drive_verichel(left,5);
+    index_current = Sampling();
+   if (index_current > index_last ) //find the larrget freqncy first
     {
-      Freq_Value_Last =totReadings[index];
-      rotate_check_flag=0;
+    index_last =index_current;
+    Freq_Value_Last =totReadings[index_last] ;
     }
-    else 
+    else if (index_current ==index_last) 
     {
-      stop_function();
-     
+        if (  totReadings[index_last]>Freq_Value_Last) 
+        {
+          Freq_Value_Last =totReadings[index_last];
+          rotate_check_flag=1;
+        }
+        else 
+        {
+          stop_function();
+          rotate_check_flag=0;
+        }
     }
      
    }
-   rotate_check_flag=1;
    if (get_distance() >15)
       {
-      drive_verichel(front);      
+      drive_verichel(front,20);      
       }
     else 
     {
     stop_function();
-    drive_verichel(left,5);
-    drive_verichel(left,5);
     }
-  }
-}
+    
+ }
+
 
 
 void print_info ()
@@ -73,6 +79,40 @@ void print_info ()
     Serial.print("\n\n");
     Serial.print("This took "); Serial.print(millis() - startTime); Serial.println(" milliseconds");
 }
+
+void find_mine_dircetion (){  
+ 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //
 //int Locate_Freq (double current_frequency)
@@ -88,6 +128,16 @@ void print_info ()
 //  }
 //  return frequency_hz[Freq_index]; // return target Freq
 //}
+
+
+
+
+
+
+
+
+
+
 
 
 

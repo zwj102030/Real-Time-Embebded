@@ -4,6 +4,7 @@
 #include "arduinoFFT.h"
 #define SAMPLES 256             //Must be a power of 2
 #define SAMPLING_FREQUENCY 25600//Hz, must be less than 80000 due to ADC
+#define threshold_value 150 // for the volume
 arduinoFFT FFT = arduinoFFT();
 unsigned int sampling_period_us;
 unsigned long microseconds;
@@ -58,13 +59,13 @@ char Sampling (){
       freqReadings[8] = vReal[45]; //9000
       freqReadings[9] = ((vReal[47] + vReal[48]))/2; //9500Hz
     */
-    for (int i=0;i<10;i++)
+    for (int i=0;i<10;i++)                  
     {
-       freqReadings[i] = (vReal[50+i*5]+vReal[49+i*5]+vReal[51+i*5])/3;
+       freqReadings[i] =   vReal[50+i*5];              //(vReal[50+i*5]+vReal[49+i*5]+vReal[51+i*5])/3;
     }
  
     for (int j = 0; j < 10; j++)
-    { if (freqReadings[j] >=150)
+    { if (freqReadings[j] >=threshold_value)
       if (freqReadings[j] > totReadings[j])
         totReadings[j] = freqReadings[j];
     }
@@ -73,8 +74,8 @@ char Sampling (){
   }
    for (int i=10;i>0;i--)
    {  
-     if(totReadings[i] != 0 && index =0)
-      index = i
+     if(totReadings[i] != 0 && index ==0)
+      index = i;
    }
   return index; 
 }
