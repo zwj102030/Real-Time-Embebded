@@ -50,7 +50,7 @@ void loop()
         }
         else 
         {
-          stop_function();
+          drive_verichel(right,5);
           rotate_check_flag=0;
         }
     }
