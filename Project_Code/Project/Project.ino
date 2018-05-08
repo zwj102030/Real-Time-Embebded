@@ -14,8 +14,8 @@ int Locate_Freq (double current_frequency);
 double Freq_Value_Last;
 double Freq_Value_Current;
 void print_mic_info ();
-
-
+double Mag[3] = {0,0,0};
+int index_i = 0;
 void setup()
 {
   FFT_init() ;
@@ -25,46 +25,12 @@ void setup()
 }
 
 void loop()
-{   char index_current;
-    char index_last;
-    int current_Freq;
-    int target_Freq; 
-    //distance =get_distance();
-   index_current =  Sampling();
-   char rotate_check_flag =1 ;
-   while ( rotate_check_flag )
-   {
-    drive_verichel(left,5);
-    index_current = Sampling();
-   if (index_current > index_last ) //find the larrget freqncy first
-    {
-    index_last =index_current;
-    Freq_Value_Last =totReadings[index_last] ;
-    }
-    else if (index_current ==index_last) 
-    {
-        if (  totReadings[index_last]>Freq_Value_Last) 
-        {
-          Freq_Value_Last =totReadings[index_last];
-          rotate_check_flag=1;
-        }
-        else 
-        {
-          drive_verichel(right,5);
-          rotate_check_flag=0;
-        }
-    }
+{   
      
-   }
-   if (get_distance() >15)
-      {
-      drive_verichel(front,20);      
-      }
-    else 
-    {
-    stop_function();
-    }
+  intial_array();
+  check_direction();
     
+   
  }
 
 
@@ -76,13 +42,66 @@ void print_info ()
       Serial.print(5000 + (500 * i)); Serial.print(" Amplitude: "); 
       Serial.println(totReadings[i]);
     }
-    Serial.print("\n\n");
+    
+     Serial.print("\n index:  ");
+       Serial.print(index_i);
+    Serial.print("\n Marg[0]:  ");
+     Serial.print(Mag[0]);
+      Serial.print(" Marg[1]:  ");
+     Serial.print(Mag[1]);
+      Serial.print("Marg[2]:  ");
+     Serial.print(Mag[2]);
+      Serial.print("\n ");
     Serial.print("This took "); Serial.print(millis() - startTime); Serial.println(" milliseconds");
+    
 }
 
-void find_mine_dircetion (){  
- 
+void intial_array()
+{
+index_i = Sampling();
+Mag[1] = totReadings[index_i];
+drive_verichel(left,5);
+index_i= Sampling();
+Mag[0] = totReadings[index_i];
+drive_verichel(right,5);
+index_i = Sampling();
+Mag[2] = totReadings[index_i]; 
 }
+
+
+
+void  check_direction()
+{
+   print_info ();
+if ((Mag[1]>Mag [0]) && (Mag[1]>Mag [2]) )
+{
+drive_verichel (front,30);
+intial_array();
+check_direction();
+}
+else if (Mag[0]>Mag [1] )
+{
+drive_verichel (left,5);
+index_i=Sampling();
+Mag[2]=Mag[1];
+Mag[1]=Mag[0];
+Mag[0] = totReadings[index_i];
+check_direction();
+}
+
+else if (Mag[2]>Mag [1] )
+{
+drive_verichel (right,5);
+index_i=Sampling();
+Mag[0]=Mag[1];
+Mag[1]=Mag[2];
+Mag[2] = totReadings[index_i];
+check_direction();
+}
+
+
+}
+
 
 
 
