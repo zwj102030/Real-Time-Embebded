@@ -16,7 +16,7 @@ double Freq_Value_Last;
 double Freq_Value_Current;
 void print_mic_info ();
 double Mag[3] = {0,0,0};
-int index_i = 1;
+int index_i   =0;
 bool max_flag =0;
 int counter_i =0;
 void setup()
@@ -28,15 +28,10 @@ void setup()
 }
 
 void loop()
-{   
-     
+{ 
   intial_array();
   check_direction();
-  
-   
- }
-
-
+}
 
 void print_info ()
 {distance =get_distance();
@@ -49,11 +44,11 @@ void print_info ()
     
      Serial.print("\n index:  ");
        Serial.print(index_i);
-    Serial.print("\n Marg[0]:  ");
+    Serial.print("\n Mag[0]:  ");
      Serial.print(Mag[0]);
-      Serial.print(" Marg[1]:  ");
+      Serial.print(" Mag[1]:  ");
      Serial.print(Mag[1]);
-      Serial.print("Marg[2]:  ");
+      Serial.print("Mag[2]:  ");
      Serial.print(Mag[2]);
       Serial.print("\n ");
     Serial.print("This took "); Serial.print(millis() - startTime); Serial.println(" milliseconds");
@@ -62,21 +57,21 @@ void print_info ()
 
 void intial_array()
 {
- Mag[0]=0;
- Mag[1]=0;
- Mag[2]=0;
-check_index();
-Sampling();
-Mag[1] =totReadings[index_i];
-drive_verichel(right,5);
-Sampling();
-Mag[0] = totReadings[index_i];
-drive_verichel(left,5);
-delay(100);
-drive_verichel(left,5);
-Sampling();
-Mag[2] = totReadings[index_i];
-drive_verichel(right,5);
+  Mag[0]=0;
+  Mag[1]=0;
+  Mag[2]=0;
+  check_index();
+  Sampling();
+  Mag[1] =totReadings[index_i];
+  drive_verichel(right,5);
+  Sampling();
+  Mag[0] = totReadings[index_i];
+  drive_verichel(left,5);
+  delay(100);
+  drive_verichel(left,5);
+  Sampling();
+  Mag[2] = totReadings[index_i];
+  drive_verichel(right,5);
 }
 
 
@@ -84,35 +79,35 @@ drive_verichel(right,5);
 void  check_direction()
 {
   check_index();
-   print_info ();
-if ((Mag[1]-Mag [0]>=Volume_Thershold) && (Mag[1]-Mag [2]>=Volume_Thershold) )
-{
-drive_verichel (front,30);
-intial_array();
-check_direction();
-}
-else if (Mag[0]-Mag [1]>=Volume_Thershold)
-{
-drive_verichel (left,5);
-Sampling();
-Mag[2]=Mag[1];
-Mag[1]=Mag[0];
-Mag[0] = totReadings[index_i];
-check_direction();
-}
+  print_info ();
+  if ((Mag[1]-Mag [0]>=Volume_Thershold) && (Mag[1]-Mag [2]>=Volume_Thershold) )
+  {
+    drive_verichel (front,30);
+    intial_array();
+    check_direction();
+  }
+  else if (Mag[0]-Mag [1]>=Volume_Thershold)
+  {
+    drive_verichel (left,5);
+    Sampling();
+    Mag[2]=Mag[1];
+    Mag[1]=Mag[0];
+    Mag[0] = totReadings[index_i];
+    check_direction();
+  }
 
-else if (Mag[2]-Mag [1] >=Volume_Thershold)
-{
-drive_verichel (right,5);
-Sampling();
-Mag[0]=Mag[1];
-Mag[1]=Mag[2];
-Mag[2] = totReadings[index_i];
-check_direction();
-}
-else 
-{
- intial_array();
+  else if (Mag[2]-Mag [1] >=Volume_Thershold)
+  {
+    drive_verichel (right,5);
+    Sampling();
+    Mag[0]=Mag[1];
+    Mag[1]=Mag[2];
+    Mag[2] = totReadings[index_i];
+    check_direction();
+  }
+  else 
+  {
+  intial_array();
  }
 }
 
@@ -134,54 +129,5 @@ void check_index()
    max_flag=0;
  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//int Locate_Freq (double current_frequency)
-//{ 
-//  int Freq_index;
-//    for(int i=10;i>=1;i--)
-//  {
-//    if(abs(current_frequency-frequency_hz[i])<frequency_diff)
-//    {
-//      Freq_index =i;  
-//      break;
-//    }
-//  }
-//  return frequency_hz[Freq_index]; // return target Freq
-//}
-
-
-
-
-
-
-
-
-
-
-
 
 

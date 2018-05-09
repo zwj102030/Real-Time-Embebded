@@ -1,3 +1,6 @@
+#ifndef ULTRA_SONIC_H_INCLUDED
+#define ULTRA_SONIC_H_INCLUDED
+
 #include "arduinoFFT.h"
 //#include "Motion.h"
 #include <Servo.h>
@@ -28,5 +31,7 @@ void ultra_sonic_setup() {
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 }
+
+#endif //ULTRA_SONIC_H_INCLUDED
 
 
