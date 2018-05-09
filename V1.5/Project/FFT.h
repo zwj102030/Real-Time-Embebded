@@ -4,15 +4,15 @@
 #include "arduinoFFT.h"
 #define SAMPLES 256             //Must be a power of 2
 #define SAMPLING_FREQUENCY 25600//Hz, must be less than 80000 due to ADC
-#define threshold_value 150 // for the volume
+//#define threshold_value 150 // for the volume
 arduinoFFT FFT = arduinoFFT();
 unsigned int sampling_period_us;
 unsigned long microseconds;
 double vReal[SAMPLES];
 double vImag[SAMPLES];
 double Freq_value;
-char counter ;
-int startTime ;
+char counter;
+int startTime;
 double freqReadings[10];
 static double totReadings[10];
 void FFT_init() {
@@ -27,7 +27,7 @@ void Sampling (){
     totReadings[i] = 0;
   }
 
-  for (int i = 0; i < 15; i++)   //taking 16 sample 
+  for (int i = 0; i < 32; i++)   //taking 32 samples
   {
 
     /*SAMPLING*/
@@ -48,20 +48,17 @@ void Sampling (){
     FFT.ComplexToMagnitude(vReal, vImag, SAMPLES);
 
  
-    for (int i=0;i<10;i++)                  
+    for (int j=0;j<10;j++)                  
     {
-       freqReadings[i] =   (vReal[50+i*5]+vReal[49+i*5]+vReal[51+i*5])/3;
-     
-      //  vReal[50+i*5];
+       freqReadings[j] =   (vReal[50+j*5]+vReal[49+j*5]+vReal[51+j*5])/3;
     }
  
     for (int j = 0; j < 10; j++)
-    { if (freqReadings[j] >=threshold_value)
-        {if (freqReadings[j] > totReadings[j])
-        totReadings[j] = freqReadings[j];
-        }
+    {
+       if (freqReadings[j] > totReadings[j])
+          totReadings[j] = freqReadings[j];   
     }
-       delay((62.5 * (i+1)) - (millis()-startTime));
+       delay((39.0625 * (i+1)) - (millis()-startTime));
   }
   
 }

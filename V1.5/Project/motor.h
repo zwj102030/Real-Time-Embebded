@@ -27,20 +27,14 @@ void drive_verichel (char direct, char delay_time =0 )  //1800 around 1 cc
     
     case front : 
         motore1.writeMicroseconds(1300); //left foreward
-        motore2.writeMicroseconds(1300);  //right backward 
-//        if (delay_time !=0 )
-//        {
-//          delay(100*delay_time); // distance
-//          stop_function();
-//    
-//        }
+        motore2.writeMicroseconds(1300);  //right foreward 
           init_time = millis();
           if (delay_time > 0)
           {
             while((millis()-init_time) < 100*delay_time)
             {
               distance = get_distance();
-              if(distance < 15)
+              if(distance < 20)
               {
                 Serial.print("\n\nEntering avoidCollision function with distance = ");
                 Serial.println(distance);
@@ -51,7 +45,7 @@ void drive_verichel (char direct, char delay_time =0 )  //1800 around 1 cc
           }
         break ;
     case back : 
-        motore1.writeMicroseconds(2000); //left turn around 
+        motore1.writeMicroseconds(2000); //left backward
         motore2.writeMicroseconds(2000);  //right backward 
          if (delay_time !=0 )
         {
@@ -69,8 +63,8 @@ void drive_verichel (char direct, char delay_time =0 )  //1800 around 1 cc
         }
         break;
     case right : 
-        motore1.writeMicroseconds(1900); //left foreward
-        motore2.writeMicroseconds(1100); //right backward, bias due to weak motor
+        motore1.writeMicroseconds(1900); //left backward
+        motore2.writeMicroseconds(1100); //right foreward, bias due to weak motor
          if (delay_time !=0 )
         {
         delay(100*delay_time); // distance
@@ -87,23 +81,26 @@ void avoid_collision()
 {
    stop_function();
 
-   drive_verichel(left,5);
+   delay(100);
+
+   drive_verichel(left,10);
    double left_distance = 0;
    left_distance = get_distance();
    delay(500);
    
-   drive_verichel(right,5);
+   drive_verichel(right,10);
    delay(100);
-   drive_verichel(right,5);
+   drive_verichel(right,10);
    double right_distance = 0;
    right_distance = get_distance();
    delay(500);
 
    if(left_distance>right_distance)
    {
-     drive_verichel(left,5);
+     drive_verichel(left,10);
      delay(100);
-     drive_verichel(left,5);
+     drive_verichel(left,10);
+     delay(100);
      drive_verichel(front,20);
    }
    else

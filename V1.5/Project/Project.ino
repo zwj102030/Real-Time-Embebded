@@ -4,8 +4,8 @@
 #include "ultra_sonic.h"
 //SAMPLES 128            Must be a power of 2
 //SAMPLING_FREQUENCY 25600 Hz, must be less than 80000 due to ADC
-#define Volume_Thershold 100//if the Volume is larger than this, it will go
-#define distance_Thershold 40//if the distance is lager than this, it will go
+#define Volume_Threshold 50//if the Volume is larger than this, it will go
+#define distance_Threshold 40//if the distance is lager than this, it will go
 #define frequency_diff 200//the max variation of the frequncy
 
 
@@ -19,21 +19,7 @@ void print_info ();       //print the all info though serial port
 double Mag[3] = {0,0,0};  //Mag array will contain freq. volume from left [0], middle [1] , and right Mag [2]
 int index_i = 0;          //frequency increment counter 
 bool max_flag =0;         //the current freq also has the max magnitude
-int counter_i =0;  
-
-void setup()
-{
-  FFT_init() ;
-  motor_initial () ;
-  ultra_sonic_setup();
-  Serial.begin(115200);
-}
-
-void loop()
-{   
-  intial_array();  //Populate  
-  check_direction(); // do the first check  
-}
+int counter_i =0;
 
 void print_info ()   //print the all info though serial port 
 {
@@ -58,7 +44,7 @@ void print_info ()   //print the all info though serial port
     
 }
 
-void intial_array()  // first step to fill up left-middle-right  array .
+void initial_array()  // first step to fill up left-middle-right  array .
 {
   Mag[0]=0;
   Mag[1]=0;
@@ -67,55 +53,88 @@ void intial_array()  // first step to fill up left-middle-right  array .
   Sampling();
   Mag[1] =totReadings[index_i];
   drive_verichel(right,5);
+  delay(50);
   Sampling();
   Mag[0] = totReadings[index_i];
   drive_verichel(left,5);
   delay(100);
   drive_verichel(left,5);
+  delay(50);
   Sampling();
   Mag[2] = totReadings[index_i];
-  drive_verichel(right,5);
 }
 
 
 
-void  check_direction()
+void  check_direction(bool goingLeft)
 {
  check_index();  
  print_info ();
-      if ((Mag[1]-Mag [0]>=Volume_Thershold) && (Mag[1]-Mag [2]>=Volume_Thershold) )  //check if middle magnitude is greater than both left and right  
+      if ((Mag[1]-Mag [0]>=Volume_Threshold) && (Mag[1]-Mag [2]>=Volume_Threshold) )  //check if middle magnitude is greater than both left and right  
       {
-          drive_verichel (front,30);
-         intial_array();
-        check_direction();
+        if(goingLeft)
+        {
+          drive_verichel(right, 5);
+        }
+        else
+        {
+          drive_verichel(left, 5);
+        }
+        delay(100);
+        drive_verichel (front,30);
+        delay(500);
       }
-      else if (Mag[0]-Mag [1]>=Volume_Thershold)
+      else if (Mag[0]-Mag [1]>= 0)
       {
+        if(!goingLeft)
+        {
+          drive_verichel(left, 5);
+          delay(100);
+        }
         drive_verichel (left,5);
+        delay(50);
         Sampling();
         Mag[2]=Mag[1];
         Mag[1]=Mag[0];
         Mag[0] = totReadings[index_i];
-        check_direction();
+        check_direction(true);
       }
       
-    else if (Mag[2]-Mag [1] >=Volume_Thershold)
+    else if (Mag[2]-Mag [1] >= 0)
     {
+        if(goingLeft)
+        {
+          drive_verichel(right, 5);
+          delay(100);
+        }
         drive_verichel (right,5);
         Sampling();
         Mag[0]=Mag[1];
         Mag[1]=Mag[2];
         Mag[2] = totReadings[index_i];
-        check_direction();
+        check_direction(false);
     }
     else
     {
-        check_direction();
+        drive_verichel(left, 5);
+        delay(500);
+        drive_verichel(left, 5);
+        delay(100);
+        initial_array();
+        check_direction(true);
     }
 }
 
-
-
+void finish_blink_red() //Call when the final frequency has been reached
+{
+  for(;;)
+  {
+    digitalWrite(13, HIGH);
+    delay(500);
+    digitalWrite(13, LOW);
+    delay(500);
+  }
+}
 
 void check_index()
 {
@@ -124,13 +143,32 @@ void check_index()
      if ( totReadings[i]<totReadings [index_i])
         counter_i++;
     }
-   if (max_flag==(10-counter_i))  //the current has maxium value 
+   if (max_flag==(10-counter_i))  //the current has maximum value 
         max_flag =1;
    if (get_distance() <=15 &&max_flag ==1)
    {
+       if(index_i == 9)
+       {
+        finish_blink_red();
+       }
        index_i++;
        max_flag=0;
    }
 }
 
+void setup()
+{
+  delay(5000);
+  FFT_init() ;
+  motor_initial () ;
+  ultra_sonic_setup();
+  Serial.begin(115200);
+}
+
+void loop()
+{   
+  initial_array();  //Populate 
+  delay(100); 
+  check_direction(true); // do the first check  
+}
 
