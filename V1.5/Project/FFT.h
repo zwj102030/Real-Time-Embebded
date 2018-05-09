@@ -22,16 +22,16 @@ void Sampling (){
  //  int index ;
   startTime = millis();
   
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < 10; i++)   
   {
     totReadings[i] = 0;
   }
 
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 15; i++)   //taking 16 sample 
   {
 
     /*SAMPLING*/
-    for (int j = 0; j < SAMPLES; j++)
+    for (int j = 0; j < SAMPLES; j++)    
     {
       microseconds = micros();    //Overflows after around 70 minutes!
 
@@ -66,51 +66,5 @@ void Sampling (){
   
 }
 
-#endif // MYFFT_H_INCLUDED
-
-
-
-
-//
-//
-//double Peak_Magnitude (double *vD, uint16_t samples, double samplingFrequency)
-//{ Freq_value = 0;
-//
-//  uint16_t IndexOfMaxY = 0;
-//  //If sampling_frequency = 2 * max_frequency in signal,
-//  //value would be stored at position samples/2
-//  for (uint16_t i = 1; i < ((samples >> 1) + 1); i++) {
-//    if ((vD[i - 1] < vD[i]) && (vD[i] > vD[i + 1])) {
-//      if (vD[i] > Freq_value) {
-//        Freq_value = vD[i];
-//        IndexOfMaxY = i;
-//      }
-//    }
-//  }
-//  return IndexOfMaxY; // return Peak_Freq_Value
-//    double delta = 0.5 * ((vD[IndexOfMaxY - 1] - vD[IndexOfMaxY + 1]) / (vD[IndexOfMaxY - 1] - (2.0 * vD[IndexOfMaxY]) + vD[IndexOfMaxY + 1]));
-//    double interpolatedX = ((IndexOfMaxY + delta)  * samplingFrequency) / (samples - 1);
-//    if (IndexOfMaxY == (samples >> 1)) //To improve calculation on edge values
-//      interpolatedX = ((IndexOfMaxY + delta)  * samplingFrequency) / (samples);
-//    return interpolatedX;  //return Peak_Freq
-//}
-
-//double Magnitude (double *vD, uint16_t samples, double samplingFrequency, double Target_Freq,char averge_i)
-//{
-//double avg =0;
-//IndexOfMaxY =(Target_Freq*samples)/samplingFrequency;
-//  if (averge_i !=0)
-//    for (int i =0;i<averge_i/2;i++)  //loop half of i
-//    {
-//      avg +=  vD[IndexOfMaxY+i]
-//      avg +=  vD[IndexOfMaxY-i]
-//    }
-//  else
-//    {
-//      avg = vD[IndexOfMaxY]  //return if averge 0
-//    }
-// return avg  //return request Freq - Value
-//}
-
-
+#endif // FFT_H_INCLUDED
 
