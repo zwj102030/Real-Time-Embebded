@@ -10,33 +10,32 @@
 //int frequency_hz[10]={10000,9000,8000,7000,6000,5000,4000,3000,2000,1000};//the frequency of the ten mines
 int distance;
 int Locate_Freq (double current_frequency);
+double totMagThreshold[10] = {400.0, 90.0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 double Freq_Value_Last;
 double Freq_Value_Current;
 void print_mic_info ();
 double Mag[3] = {0,0,0};
 int index_i = 0;
+bool max_flag =0;
 void setup()
 {
+  delay(5000);
   FFT_init() ;
-  motor_initial () ;
+  motor_initial();
   ultra_sonic_setup();
   Serial.begin(115200);
 }
 
 void loop()
-{   
-     
+{
   intial_array();
   check_direction();
-    
-   
- }
+}
 
-
-
-void print_info ()
-{  Serial.print("Distance "); Serial.print(distance); Serial.println(" cm");
+void print_info()
+{distance =get_distance();
+  Serial.print("Distance "); Serial.print(distance); Serial.println(" cm");
   for(size_t i = 0; i < 10; i++)
     {
       Serial.print(5000 + (500 * i)); Serial.print(" Amplitude: "); 
@@ -45,11 +44,11 @@ void print_info ()
     
      Serial.print("\n index:  ");
        Serial.print(index_i);
-    Serial.print("\n Marg[0]:  ");
+    Serial.print("\n Mag[0]:  ");
      Serial.print(Mag[0]);
-      Serial.print(" Marg[1]:  ");
+      Serial.print(" Mag[1]:  ");
      Serial.print(Mag[1]);
-      Serial.print("Marg[2]:  ");
+      Serial.print("Mag[2]:  ");
      Serial.print(Mag[2]);
       Serial.print("\n ");
     Serial.print("This took "); Serial.print(millis() - startTime); Serial.println(" milliseconds");
@@ -58,13 +57,18 @@ void print_info ()
 
 void intial_array()
 {
-index_i = Sampling();
+ Mag[0]=0;
+ Mag[1]=0;
+ Mag[2]=0;
+check_index();
+Sampling();
 Mag[1] = totReadings[index_i];
-drive_verichel(left,5);
-index_i= Sampling();
-Mag[0] = totReadings[index_i];
 drive_verichel(right,5);
-index_i = Sampling();
+Sampling();
+Mag[0] = totReadings[index_i];
+drive_verichel(left,10);
+
+Sampling();
 Mag[2] = totReadings[index_i]; 
 }
 
@@ -72,6 +76,7 @@ Mag[2] = totReadings[index_i];
 
 void  check_direction()
 {
+  check_index();
    print_info ();
 if ((Mag[1]>Mag [0]) && (Mag[1]>Mag [2]) )
 {
@@ -82,7 +87,7 @@ check_direction();
 else if (Mag[0]>Mag [1] )
 {
 drive_verichel (left,5);
-index_i=Sampling();
+Sampling();
 Mag[2]=Mag[1];
 Mag[1]=Mag[0];
 Mag[0] = totReadings[index_i];
@@ -92,23 +97,30 @@ check_direction();
 else if (Mag[2]>Mag [1] )
 {
 drive_verichel (right,5);
-index_i=Sampling();
+Sampling();
 Mag[0]=Mag[1];
 Mag[1]=Mag[2];
 Mag[2] = totReadings[index_i];
 check_direction();
 }
-
-
 }
 
 
 
 
-
-
-
-
+void check_index()
+{
+  for (int i= index_i; i<10;i++)
+  {
+   if ( totReadings[i]<totReadings [index_i])
+      max_flag=1;
+  }
+ if (get_distance() <=15 &&max_flag ==1)
+ {
+   index_i++;
+   max_flag=0;
+ }
+}
 
 
 
