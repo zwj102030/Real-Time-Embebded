@@ -6,7 +6,7 @@
 #define trigPin 21
 #define echoPin 20
 
-extern double get_distance( )
+extern double get_distance()  
     {
       long duration, distance;
       digitalWrite(trigPin, LOW);  
@@ -17,12 +17,13 @@ extern double get_distance( )
       digitalWrite(trigPin, LOW);
       duration = pulseIn(echoPin, HIGH);
       distance = (duration/2) / 29.1;
-      return distance;
+      return distance;   //retunr value in cm 
     
     }
 
 
-void ultra_sonic_setup() {
+void ultra_sonic_setup()   // setting up the ultra_sonic sensor 
+{      
   // put your setup code here, to run once:
   Serial.begin(115200);
   pinMode(trigPin, OUTPUT);
